@@ -1,0 +1,50 @@
+app:
+  name: "user-service"
+  environment: "development"
+  version: "1.0.0"
+
+http:
+  port: 8080
+  read_timeout: 5s
+  write_timeout: 10s
+  idle_timeout: 120s
+
+database:
+  driver: "mysql"
+  host: "localhost"
+  port: 3306
+  database: "users"
+  username: "root"
+  password: "secret"
+  max_open_conns: 10
+  max_idle_conns: 5
+  conn_max_lifetime: 1h
+
+redis:
+  host: "localhost"
+  port: 6379
+  password: ""
+  db: 0
+
+jwt:
+  secret_key: "your-secret-key"
+  token_duration: 24h
+
+log:
+  level: "debug"
+  format: "json"
+  output_path: "stdout"
+
+smtp:
+  host: "smtp.example.com"
+  port: 587
+  username: "noreply@example.com"
+  password: "your-smtp-password"
+  from: "noreply@example.com"
+  website_url: "https://example.com"
+
+email_templates:
+  path: "templates/emails"
+  welcome: "welcome.html"
+  password_reset: "password_reset.html"
+  password_changed: "password_changed.html" 
