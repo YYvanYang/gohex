@@ -2,7 +2,8 @@ package command
 
 import (
 	"context"
-	"github.com/your-org/your-project/internal/domain/vo"
+	"github.com/gohex/gohex/internal/domain/vo"
+	"github.com/gohex/gohex/pkg/errors"
 )
 
 // ChangePasswordCommand 修改密码命令

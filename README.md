@@ -6,11 +6,19 @@ A Go microservice example based on Hexagonal Architecture (Ports and Adapters Ar
 
 - Hexagonal Architecture based on Domain-Driven Design (DDD)
 - CQRS pattern for command and query separation
-- Complete event sourcing support
-- Distributed tracing and monitoring
-- Cache optimization and read/write separation
-- Robust error handling
-- Transaction management with Unit of Work pattern
+- Event Sourcing with optimistic concurrency control
+- Distributed tracing with OpenTelemetry
+- Metrics collection with Prometheus
+- Structured logging with Zap
+- JWT-based authentication
+- MySQL for persistence
+- Redis for caching
+- Kafka for event bus
+- Graceful shutdown
+- Comprehensive error handling
+- Unit of Work pattern
+- Validation using validator/v10
+- API documentation with Swagger
 
 ## 🚀 Quick Start
 
@@ -18,59 +26,68 @@ A Go microservice example based on Hexagonal Architecture (Ports and Adapters Ar
 
 - Go 1.21+
 - Docker & Docker Compose
-- Make
+- MySQL 8.0+
+- Redis 6.0+
+- Kafka 2.8+
 
 ### Installation
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/gohex
+git clone https://github.com/gohex/gohex
 
 # Enter project directory
 cd gohex
 
+# Start infrastructure services
+docker-compose up -d
+
 # Install dependencies
-make install
+go mod download
 
-# Start dependent services
-make docker-up
+# Run migrations
+make migrate
 
-# Run service
+# Start service
 make run
-```
-
-### Basic Usage
-
-```bash
-# Run tests
-make test
-
-# Run lint
-make lint
-
-# Build
-make build
 ```
 
 ## 📁 Project Structure
 
 ```
 📦 gohex
-├── 📂 cmd                  # Application entries
-├── 📂 internal            # Internal code
-│   ├── 📂 domain         # Domain layer
-│   ├── 📂 application    # Application layer
-│   └── 📂 infrastructure # Infrastructure layer
-└── 📂 pkg                # Public packages
+├── 📂 cmd                            # Application entries
+│   └── 📂 api                       # API server
+├── 📂 internal                      # Internal packages
+│   ├── 📂 domain                    # Domain layer
+│   │   ├── 📂 aggregate            # Aggregates
+│   │   ├── 📂 event               # Domain events
+│   │   ├── 📂 service            # Domain services
+│   │   └── 📂 vo                # Value objects
+│   ├── 📂 application             # Application layer
+│   │   ├── 📂 command           # Command handlers
+│   │   ├── 📂 query            # Query handlers
+│   │   ├── 📂 dto             # Data transfer objects
+│   │   └── 📂 port           # Ports (interfaces)
+│   └── 📂 infrastructure        # Infrastructure layer
+│       ├── 📂 adapter         # Adapters
+│       ├── 📂 bus            # Command/Query/Event buses
+│       └── 📂 config        # Configuration
+└── 📂 pkg                    # Public packages
+    ├── 📂 errors           # Error handling
+    ├── 📂 tracer          # Distributed tracing
+    └── 📂 validator      # Validation utilities
 ```
 
 ## 🔧 Configuration
 
-Configure through environment variables or configuration files:
+Configuration is handled through environment variables or config file:
 
 ```yaml
+# config/config.yaml
 app:
   name: gohex
+  env: development
   version: 1.0.0
 
 http:
@@ -78,25 +95,41 @@ http:
   timeout: 30s
 
 database:
-  driver: postgres
-  dsn: postgres://user:pass@localhost:5432/dbname
+  driver: mysql
+  host: localhost
+  port: 3306
+  name: gohex
+  user: root
+  password: secret
 
-cache:
-  driver: redis
-  address: localhost:6379
+redis:
+  host: localhost
+  port: 6379
+
+kafka:
+  brokers:
+    - localhost:9092
+  group: gohex
+
+jwt:
+  secret: your-secret-key
+  duration: 24h
+
+log:
+  level: debug
+  format: json
 ```
 
 ## 📖 Documentation
 
-For detailed documentation, please refer to:
-
-- [Architecture Design](docs/architecture.md)
 - [API Documentation](docs/api.md)
-- [Contributing Guide](CONTRIBUTING.md)
+- [Architecture Overview](docs/architecture.md)
+- [Development Guide](docs/development.md)
+- [Deployment Guide](docs/deployment.md)
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details.
+Please read our [Contributing Guide](CONTRIBUTING.md) before submitting a Pull Request.
 
 ## 📄 License
 

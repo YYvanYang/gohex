@@ -3,6 +3,7 @@ package logger
 import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"github.com/gohex/gohex/internal/application/port"
 )
 
 type zapLogger struct {

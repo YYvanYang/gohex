@@ -6,7 +6,9 @@ import (
 	"reflect"
 	"sync"
 
-	"github.com/your-org/your-project/internal/application/port/input/command"
+	"github.com/gohex/gohex/internal/application/command"
+	"github.com/gohex/gohex/pkg/errors"
+	"github.com/gohex/gohex/pkg/tracer"
 )
 
 type commandBus struct {

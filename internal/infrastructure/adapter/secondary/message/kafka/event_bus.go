@@ -5,8 +5,10 @@ import (
 	"encoding/json"
 
 	"github.com/Shopify/sarama"
-	"github.com/your-org/your-project/internal/domain/event"
-	"github.com/your-org/your-project/internal/application/port"
+	"github.com/gohex/gohex/internal/domain/event"
+	"github.com/gohex/gohex/pkg/errors"
+	"github.com/gohex/gohex/internal/application/port"
+	"github.com/gohex/gohex/pkg/tracer"
 )
 
 type kafkaEventBus struct {

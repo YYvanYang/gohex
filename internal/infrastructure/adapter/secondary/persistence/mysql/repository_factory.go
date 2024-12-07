@@ -2,25 +2,39 @@ package mysql
 
 import (
 	"database/sql"
-	"github.com/your-org/your-project/internal/application/port"
+	"github.com/gohex/gohex/internal/application/port"
 )
 
-type repositoryFactory struct {
+// RepositoryFactory 创建仓储实例的工厂
+type RepositoryFactory struct {
+	db      *sql.DB
 	logger  Logger
 	metrics MetricsReporter
 }
 
-func NewRepositoryFactory(logger Logger, metrics MetricsReporter) *repositoryFactory {
-	return &repositoryFactory{
+// NewRepositoryFactory 创建仓储工厂实例
+func NewRepositoryFactory(db *sql.DB, logger Logger, metrics MetricsReporter) *RepositoryFactory {
+	return &RepositoryFactory{
+		db:      db,
 		logger:  logger,
 		metrics: metrics,
 	}
 }
 
-func (f *repositoryFactory) CreateUserRepository(tx *sql.Tx) port.UserRepository {
-	return NewUserRepository(tx, f.logger, f.metrics)
+// CreateUserRepository 创建用户仓储实例
+func (f *RepositoryFactory) CreateUserRepository() port.UserRepository {
+	return &userRepositoryImpl{
+		db:      f.db,
+		logger:  f.logger,
+		metrics: f.metrics,
+	}
 }
 
-func (f *repositoryFactory) CreateEventStore(tx *sql.Tx) port.EventStore {
-	return NewEventStore(tx, f.logger, f.metrics)
-} 
+// CreateEventStore 创建事件存储实例
+func (f *RepositoryFactory) CreateEventStore() port.EventStore {
+	return &mysqlEventStore{
+		db:      f.db,
+		logger:  f.logger,
+		metrics: f.metrics,
+	}
+}

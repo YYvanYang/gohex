@@ -1,9 +1,8 @@
 package command
 
 import (
-	"context"
-	"github.com/your-org/your-project/internal/domain/vo"
-	"github.com/your-org/your-project/pkg/errors"
+	"github.com/gohex/gohex/internal/domain/vo"
+	"github.com/gohex/gohex/pkg/errors"
 )
 
 // AssignRoleCommand 分配角色命令

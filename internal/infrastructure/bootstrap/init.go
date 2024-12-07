@@ -1,7 +1,16 @@
 package bootstrap
 
 import (
-	"github.com/your-org/your-project/internal/infrastructure/config"
+	"database/sql"
+	"github.com/gohex/gohex/internal/infrastructure/config"
+	"github.com/gohex/gohex/internal/infrastructure/logger"
+	"github.com/gohex/gohex/internal/infrastructure/metrics"
+	"github.com/gohex/gohex/internal/infrastructure/tracing"
+	"github.com/gohex/gohex/internal/infrastructure/adapter/secondary/persistence/mysql"
+	"github.com/gohex/gohex/internal/infrastructure/adapter/secondary/cache/redis"
+	"github.com/gohex/gohex/internal/application/command"
+	"github.com/gohex/gohex/internal/application/query"
+	"github.com/gohex/gohex/internal/domain/event"
 )
 
 func initLogger(cfg config.LogConfig) Logger {

@@ -5,9 +5,17 @@ import (
 	"database/sql"
 	"encoding/json"
 	"time"
-
-	"github.com/your-org/your-project/internal/domain/event"
+	"github.com/google/uuid"
+	"github.com/gohex/gohex/internal/domain/event"
+	"github.com/gohex/gohex/internal/application/port"
+	"github.com/gohex/gohex/pkg/errors"
+	"github.com/gohex/gohex/pkg/tracer"
 )
+
+type EventStore interface {
+	port.EventStore
+	MarkEventsAsPublished(ctx context.Context, aggregateID string, version int) error
+}
 
 type eventStore struct {
 	db      *sql.DB
@@ -25,7 +33,7 @@ type eventModel struct {
 	PublishedAt  *time.Time      `db:"published_at"`
 }
 
-func NewEventStore(db *sql.DB, logger Logger, metrics MetricsReporter) *eventStore {
+func NewEventStore(db *sql.DB, logger Logger, metrics MetricsReporter) EventStore {
 	return &eventStore{
 		db:      db,
 		logger:  logger,

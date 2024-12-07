@@ -1,18 +1,34 @@
 package dto
 
-import "time"
+import (
+	"time"
+	"github.com/gohex/gohex/internal/domain/vo"
+	"github.com/gohex/gohex/internal/domain/aggregate"
+)
 
 // UserDTO 用户数据传输对象
 type UserDTO struct {
 	ID        string    `json:"id"`
 	Email     string    `json:"email"`
 	Name      string    `json:"name"`
-	Bio       string    `json:"bio,omitempty"`
-	Avatar    string    `json:"avatar,omitempty"`
+	Bio       string    `json:"bio"`
 	Status    string    `json:"status"`
 	Roles     []string  `json:"roles"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+}
+
+func NewUserDTO(user *aggregate.User) *UserDTO {
+	return &UserDTO{
+		ID:        user.ID(),
+		Email:     user.Email().String(),
+		Name:      user.Profile().Name(),
+		Bio:       user.Profile().Bio(),
+		Status:    user.Status().String(),
+		Roles:     user.RoleStrings(),
+		CreatedAt: user.CreatedAt(),
+		UpdatedAt: user.UpdatedAt(),
+	}
 }
 
 // UserListDTO 用户列表数据传输对象

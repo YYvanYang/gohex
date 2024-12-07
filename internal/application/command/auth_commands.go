@@ -5,6 +5,7 @@ import (
 	"time"
 	"github.com/gohex/gohex/internal/domain/vo"
 	"github.com/gohex/gohex/pkg/errors"
+	"github.com/gohex/gohex/internal/application/port"
 )
 
 // LoginCommand 登录命令

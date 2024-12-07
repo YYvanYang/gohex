@@ -4,8 +4,10 @@ import (
 	"context"
 	"time"
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/your-org/your-project/internal/domain/aggregate"
-	"github.com/your-org/your-project/internal/application/port/output"
+	"github.com/gohex/gohex/internal/domain/aggregate"
+	"github.com/gohex/gohex/internal/application/port"
+	"github.com/gohex/gohex/pkg/errors"
+	"github.com/gohex/gohex/pkg/tracer"
 )
 
 type Config struct {
@@ -59,7 +61,7 @@ func (s *jwtTokenService) GenerateToken(user *aggregate.User) (string, time.Time
 	return signedToken, expiresAt, nil
 }
 
-func (s *jwtTokenService) ValidateToken(ctx context.Context, tokenString string) (*output.TokenClaims, error) {
+func (s *jwtTokenService) ValidateToken(ctx context.Context, tokenString string) (*port.TokenClaims, error) {
 	timer := s.metrics.StartTimer("token_validation_duration")
 	defer timer.Stop()
 
@@ -96,7 +98,7 @@ func (s *jwtTokenService) ValidateToken(ctx context.Context, tokenString string)
 	}
 
 	s.metrics.IncrementCounter("token_validation_success")
-	return &output.TokenClaims{
+	return &port.TokenClaims{
 		UserID:    claims["user_id"].(string),
 		Email:     claims["email"].(string),
 		Roles:     roles,

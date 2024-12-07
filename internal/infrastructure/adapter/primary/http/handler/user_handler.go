@@ -6,9 +6,12 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
-	"github.com/your-org/your-project/internal/application/command"
-	"github.com/your-org/your-project/internal/application/query"
-	"github.com/your-org/your-project/pkg/errors"
+	"github.com/go-playground/validator/v10"
+	"github.com/gohex/gohex/internal/application/dto"
+	"github.com/gohex/gohex/internal/application/command"
+	"github.com/gohex/gohex/internal/application/query"
+	"github.com/gohex/gohex/pkg/errors"
+	"github.com/gohex/gohex/pkg/tracer"
 )
 
 // UserHandler 处理所有用户相关的 HTTP 请求
@@ -16,6 +19,8 @@ type UserHandler struct {
 	commandBus command.Bus
 	queryBus   query.Bus
 	logger     Logger
+	metrics    MetricsReporter
+	validator  *validator.Validate
 }
 
 // NewUserHandler 创建新的 UserHandler 实例
@@ -23,11 +28,14 @@ func NewUserHandler(
 	commandBus command.Bus,
 	queryBus query.Bus,
 	logger Logger,
+	metrics MetricsReporter,
 ) *UserHandler {
 	return &UserHandler{
 		commandBus: commandBus,
 		queryBus:   queryBus,
 		logger:     logger,
+		metrics:    metrics,
+		validator:  validator.New(),
 	}
 }
 

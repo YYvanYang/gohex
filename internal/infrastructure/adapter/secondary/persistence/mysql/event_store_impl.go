@@ -4,7 +4,11 @@ import (
     "context"
     "database/sql"
     "encoding/json"
-    "github.com/your-org/your-project/internal/domain/event"
+    "time"
+    "github.com/google/uuid"
+    "github.com/gohex/gohex/internal/domain/event"
+    "github.com/gohex/gohex/pkg/errors"
+    "github.com/gohex/gohex/pkg/tracer"
 )
 
 type mysqlEventStore struct {
@@ -122,4 +126,18 @@ func (s *mysqlEventStore) deserializeEvent(eventType string, data []byte) (event
     default:
         return nil, errors.ErrUnknownEventType
     }
+}
+
+func (s *mysqlEventStore) MarkEventsAsPublished(ctx context.Context, aggregateID string, version int) error {
+    span, ctx := tracer.StartSpan(ctx, "eventStore.MarkEventsAsPublished")
+    defer span.End()
+
+    query := `
+        UPDATE events 
+        SET published_at = CURRENT_TIMESTAMP
+        WHERE aggregate_id = ? AND version <= ? AND published_at IS NULL
+    `
+
+    _, err := s.db.ExecContext(ctx, query, aggregateID, version)
+    return err
 } 

@@ -2,7 +2,13 @@ package bootstrap
 
 import (
 	"context"
-	"github.com/your-org/your-project/internal/infrastructure/config"
+	"net/http"
+	"github.com/gohex/gohex/internal/infrastructure/config"
+	"github.com/gohex/gohex/internal/infrastructure/container"
+	"github.com/gohex/gohex/internal/application/command"
+	"github.com/gohex/gohex/internal/application/query"
+	"github.com/gohex/gohex/internal/domain/event"
+	"github.com/gohex/gohex/internal/domain/service"
 )
 
 type Application struct {

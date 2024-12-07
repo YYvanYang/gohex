@@ -4,6 +4,8 @@ import (
 	"time"
 	"github.com/spf13/viper"
 	"errors"
+	"fmt"
+	"strings"
 )
 
 type Config struct {
@@ -30,15 +32,25 @@ type HTTPConfig struct {
 }
 
 type DatabaseConfig struct {
-	Driver          string
-	Host            string
-	Port            int
-	Database        string
-	Username        string
-	Password        string
-	MaxOpenConns    int
-	MaxIdleConns    int
-	ConnMaxLifetime time.Duration
+	Driver          string        `yaml:"driver"`
+	Host            string        `yaml:"host"`
+	Port            int           `yaml:"port"`
+	Database        string        `yaml:"database"`
+	Username        string        `yaml:"username"`
+	Password        string        `yaml:"password"`
+	MaxOpenConns    int           `yaml:"max_open_conns"`
+	MaxIdleConns    int           `yaml:"max_idle_conns"`
+	ConnMaxLifetime time.Duration `yaml:"conn_max_lifetime
+}
+
+"`func (c *DatabaseConfig) DSN() string {
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true&charset=utf8mb4&loc=Local",
+		c.Username,
+		c.Password,
+		c.Host,
+		c.Port,
+		c.Database,
+	)
 }
 
 type RedisConfig struct {
@@ -88,20 +100,27 @@ type AuthConfig struct {
 	} `yaml:"session"`
 }
 
-func Load() (*Config, error) {
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath(".")
-	viper.AddConfigPath("./config")
+func Load(configPath string) (*Config, error) {
+	if configPath == "" {
+		configPath = "config/config.yaml"
+	}
+
+	viper.SetConfigFile(configPath)
+	viper.SetEnvPrefix("GOHEX")
 	viper.AutomaticEnv()
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	if err := viper.ReadInConfig(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to read config file: %w", err)
 	}
 
 	var config Config
 	if err := viper.Unmarshal(&config); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to unmarshal config: %w", err)
+	}
+
+	if err := config.Validate(); err != nil {
+		return nil, fmt.Errorf("invalid configuration: %w", err)
 	}
 
 	return &config, nil

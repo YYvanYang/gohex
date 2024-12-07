@@ -4,9 +4,11 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
-	"github.com/your-org/your-project/internal/application/port/output"
-	"github.com/your-org/your-project/internal/domain/vo"
-	"github.com/your-org/your-project/internal/infrastructure/adapter/secondary/email/gomail"
+	"github.com/gohex/gohex/internal/application/port"
+	"github.com/gohex/gohex/pkg/errors"
+	"github.com/gohex/gohex/internal/domain/vo"
+	"github.com/gohex/gohex/pkg/tracer"
+	"gopkg.in/gomail.v2"
 )
 
 type smtpEmailService struct {
@@ -24,7 +26,7 @@ type SMTPConfig struct {
 	WebsiteURL string
 }
 
-func NewSMTPEmailService(config SMTPConfig, logger Logger, metrics MetricsReporter) output.EmailService {
+func NewSMTPEmailService(config SMTPConfig, logger Logger, metrics MetricsReporter) port.EmailService {
 	return &smtpEmailService{
 		config:  config,
 		logger:  logger,

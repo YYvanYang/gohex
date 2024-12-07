@@ -5,8 +5,11 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/your-org/your-project/internal/domain/aggregate"
-	"github.com/your-org/your-project/internal/domain/vo"
+	"github.com/gohex/gohex/internal/domain/aggregate"
+	"github.com/gohex/gohex/internal/domain/vo"
+	"github.com/gohex/gohex/internal/application/port"
+	"github.com/gohex/gohex/pkg/errors"
+	"github.com/gohex/gohex/pkg/tracer"
 )
 
 type userRepository struct {
